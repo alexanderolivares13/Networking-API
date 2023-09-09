@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
-
-// create a user model that self-references and references the thoughts model.
+// create a user model that self-references(friends) and references the thoughts model.
 // the user schema also uses a validation function for the email that utilizes some regex to test that the input string is a valid email address.
 const userSchema = new Schema(
   {
@@ -16,12 +15,11 @@ const userSchema = new Schema(
       unique: true,
       validate: {
         validator: function (email) {
-          return /^([A-Za-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(
-            email
-          );
+          return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(email);
         },
         message: (input) => `${input.value} is not a valid email`,
       },
+      set: (email) => email.toLowerCase(),
     },
     thoughts: [
       {
