@@ -8,6 +8,7 @@ const {
   deleteReaction,
 } = require("../../controllers/thoughtsController");
 
+// all the api routes for CRUD functionality and their given request parameters
 router.route("/").get(getThoughts).post(createThoughts);
 router.route("/:thoughtId").get(getSingleThought).delete(deleteThought);
 router.route("/:thoughtId/reactions").post(createReaction);

@@ -1,6 +1,7 @@
-const { Thoughts, User} = require("../models");
+const { Thoughts, User } = require("../models");
 
 module.exports = {
+  //gets all thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thoughts.find().select("-__v");
@@ -10,6 +11,7 @@ module.exports = {
     }
   },
   async getSingleThought(req, res) {
+    //gets a single thought based on the objectId passed as a parameter
     try {
       if (!req.params.thoughtId) {
         res.status(400).json({ message: "No thought found with that ID" });
@@ -23,6 +25,14 @@ module.exports = {
     }
   },
   async createThoughts(req, res) {
+    //first creates a new thought document, then pushes the thought ObjectId into the set for the user creating it.
+    // the req.body should be formatted as
+    /*
+    {
+      username: "yourUserName",
+      thoughtText: "your text body"
+    }
+    */
     try {
       if (!req.body.username || !req.body.thoughtText) {
         res.status(400).json({ message: "Username and text are required." });
@@ -42,6 +52,7 @@ module.exports = {
     }
   },
   async updateThought(req, res) {
+    //find and updates an existing thought document based on the object Id
     try {
       const updatedThought = await Thoughts.findOneAndUpdate(
         {
@@ -59,6 +70,7 @@ module.exports = {
     }
   },
   async deleteThought(req, res) {
+    //deletes a thought based on its objectId
     try {
       if (!req.params.thoughtId) {
         res.status(400).json({ message: "No thought found with that ID" });
@@ -72,6 +84,14 @@ module.exports = {
     }
   },
   async createReaction(req, res) {
+    //creates a new reaction within a thought and pushes the reaction to that thoughts reaction array
+    /* reactions request are structured as such
+    thoughts objectId: passed through as a request parameter
+    {
+      username: "yourUserName",
+      reactionBody: "your text response here"
+    }
+    */
     try {
       if (!req.body || !req.body.reactionBody || !req.body.username) {
         res
@@ -99,6 +119,7 @@ module.exports = {
     }
   },
   async deleteReaction(req, res) {
+    //deletes a reaction from a thought's reaction array using the reactions objectId
     try {
       const deletedReaction = await Thoughts.findOneAndUpdate(
         {

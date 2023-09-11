@@ -25,6 +25,14 @@ module.exports = {
     }
   },
   async createUser(req, res) {
+    //creates a user with only a username and email.
+    /*
+    the request for creating a user should be structured as such
+    {
+      username: "your username",
+      email: "a valid email address"
+    }
+    */
     try {
       if (!req.body || !req.body.username || !req.body.email) {
         res.status(400).json({ message: "Username and email are required." });

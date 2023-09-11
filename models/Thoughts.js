@@ -2,6 +2,8 @@ const { Schema, model } = require("mongoose");
 const { DateTime } = require("luxon");
 const reactionSchema = require("./Reaction");
 
+//the thoughtsSchema uses the reaction schema only to fill the array with responses/reactions
+//sending a get request will give you the date in local time, as well as the count of reactions as a virtual
 const thoughtsSchema = new Schema(
   {
     thoughtText: {
@@ -17,7 +19,7 @@ const thoughtsSchema = new Schema(
     username: {
       type: String,
       required: true,
-    },  
+    },
     reactions: [reactionSchema],
   },
   {
