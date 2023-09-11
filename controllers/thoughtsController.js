@@ -1,4 +1,4 @@
-const { Thoughts, User } = require("../models");
+const { Thoughts, User} = require("../models");
 
 module.exports = {
   async getThoughts(req, res) {
@@ -26,6 +26,7 @@ module.exports = {
     try {
       if (!req.body.username || !req.body.thoughtText) {
         res.status(400).json({ message: "Username and text are required." });
+        return;
       }
       const thoughts = await Thoughts.create(req.body);
       const user = await User.findOneAndUpdate(
@@ -76,20 +77,37 @@ module.exports = {
         res
           .status(400)
           .json({ message: "Reactions must have a username and text" });
+        return;
       }
       const reaction = await Thoughts.findOneAndUpdate(
         {
           _id: req.params.thoughtId,
         },
         {
-          reactions: {
-            reactionBody: req.body.reactionBody,
-            username: req.body.username,
+          $addToSet: {
+            reactions: {
+              reactionBody: req.body.reactionBody,
+              username: req.body.username,
+            },
           },
         },
-        { new: true, upsert: false }
+        { new: true }
       );
-      res.json();
+      res.json(reaction);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  async deleteReaction(req, res) {
+    try {
+      const deletedReaction = await Thoughts.findOneAndUpdate(
+        {
+          _id: req.params.thoughtId,
+        },
+        { $pull: { reactions: { reactionId: req.params.reactionId } } },
+        { new: true }
+      );
+      res.json(deletedReaction);
     } catch (err) {
       res.status(500).json(err);
     }
