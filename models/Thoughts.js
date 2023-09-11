@@ -15,8 +15,7 @@ const thoughtsSchema = new Schema(
       get: (time) => time.toString(),
     },
     username: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     reactions: [reactionSchema],
