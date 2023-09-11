@@ -11,12 +11,12 @@ module.exports = {
   },
   async getSingleThought(req, res) {
     try {
-      if (!req.params._id) {
+      if (!req.params.thoughtId) {
         res.status(400).json({ message: "No thought found with that ID" });
       }
-      const thoughts = await Thoughts.findOne({ _id: req.params._id }).select(
-        "-__v"
-      );
+      const thoughts = await Thoughts.findOne({
+        _id: req.params.thoughtId,
+      }).select("-__v");
       res.json(thoughts);
     } catch (err) {
       res.status(500).json(err);
@@ -66,6 +66,30 @@ module.exports = {
         _id: req.params.thoughtId,
       });
       res.json(deletedThought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  async createReaction(req, res) {
+    try {
+      if (!req.body || !req.body.reactionBody || !req.body.username) {
+        res
+          .status(400)
+          .json({ message: "Reactions must have a username and text" });
+      }
+      const reaction = await Thoughts.findOneAndUpdate(
+        {
+          _id: req.params.thoughtId,
+        },
+        {
+          reactions: {
+            reactionBody: req.body.reactionBody,
+            username: req.body.username,
+          },
+        },
+        { new: true, upsert: false }
+      );
+      res.json();
     } catch (err) {
       res.status(500).json(err);
     }
