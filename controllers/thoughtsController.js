@@ -56,7 +56,7 @@ module.exports = {
     try {
       const updatedThought = await Thoughts.findOneAndUpdate(
         {
-          _id: req.params.thoughtsId,
+          _id: req.params.thoughtId,
         },
         {
           username: req.body.username,
